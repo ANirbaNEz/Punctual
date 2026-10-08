@@ -6,6 +6,12 @@ Location- and face-verified employee attendance. Employees check in and out from
 
 Both screens are installable as apps (PWA) with their own icons: **Punctual** for employees, **Punctual Admin** for admins.
 
+## Demo
+
+[![Punctual demo: the office circle and the face check](docs/demo.gif)](docs/demo.mp4)
+
+**[▶ Watch the full 55-second walkthrough](docs/demo.mp4)**: the problem, the office circle, the face check, the employee's tap, the live admin dashboard, and how it stays trustworthy. (The animation above is a 12-second excerpt; click it to open the video.)
+
 | Employee: before check-in | Employee: checked in |
 |---|---|
 | ![Employee home](docs/employee-home.png) | ![Checked in](docs/employee-checked-in.png) |
@@ -129,7 +135,7 @@ requirements-dev.txt extra packages for the tests only
 start.ps1            Windows helper: asks for passwords, starts the app and a tunnel
 models/              face models (downloaded on first start, not committed)
 photos/              selfies (created at runtime, not committed)
-docs/                README screenshots
+docs/                README screenshots, demo video and preview GIF
 ```
 
 ## Known limits
