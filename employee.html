@@ -1,0 +1,259 @@
+<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name=theme-color content="#171a3d">
+<link rel=icon href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23ffb627'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23171a3d' stroke-width='3'/%3E%3Cpath d='M16 10v6l4 3' stroke='%23171a3d' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel=manifest href="/static/manifest-employee.json">
+<link rel=apple-touch-icon href="/static/icon-employee-192.png">
+<meta name=apple-mobile-web-app-capable content=yes>
+<meta name=mobile-web-app-capable content=yes>
+<title>Punctual</title>
+<link rel=preconnect href="https://fonts.googleapis.com"><link rel=preconnect href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel=stylesheet>
+<style>
+:root{--ink:#171a3d;--mist:#efeefb;--paper:#fff;--line:#dedcf2;--mute:#6b6f93;
+  --iris:#5b4bff;--jade:#12a37f;--coral:#ff5a4f;--gold:#ffb627;
+  --display:'Unbounded',system-ui,sans-serif;--body:'Plus Jakarta Sans',system-ui,sans-serif;--mono:'DM Mono',ui-monospace,monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--mist);color:var(--ink);font:16px/1.5 var(--body)}
+main{max-width:480px;margin:0 auto;min-height:100vh;padding-bottom:40px}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+.hero{background:var(--ink);color:#fff;border-radius:0 0 34px 34px;padding:max(18px,env(safe-area-inset-top)) 22px 26px}
+.top{display:flex;justify-content:space-between;align-items:center}
+.brand{display:flex;align-items:center;gap:9px;font:600 15px var(--display);letter-spacing:-.02em}
+.mark{width:26px;height:26px;border-radius:9px;background:var(--gold);display:grid;place-items:center}
+.mark svg{width:16px;height:16px}
+.out-btn{background:#ffffff1a;border:0;border-radius:99px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;color:#fff}
+.hi{margin:26px 0 2px;color:#ffffffb3;font-size:14px}
+.who{font:600 26px/1.15 var(--display);letter-spacing:-.04em;margin:0 0 14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;background:#ffffff1a;border-radius:99px;padding:6px 12px;max-width:100%}
+.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chip svg{flex:none;width:14px;height:14px}
+
+.dial{position:relative;width:min(310px,80vw);aspect-ratio:1;margin:22px auto 4px}
+.dial svg{position:absolute;inset:0;width:100%;height:100%}
+.tick{stroke:#ffffff2e;stroke-width:3;stroke-linecap:round;transition:stroke .3s}
+.tick.hr{stroke-width:4.5}
+#btn{position:absolute;inset:15%;border-radius:50%;border:0;background:var(--paper);color:var(--ink);cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transition:transform .12s,background .3s}
+#btn:active{transform:scale(.96)}
+#btn.out{background:var(--gold)}
+#btn:disabled{background:#ffffff1a;color:#ffffffb3;cursor:default}
+#btn .act{font:600 17px var(--display);letter-spacing:-.03em}
+#btn .big{font:500 30px var(--mono);letter-spacing:-.05em}
+#btn .small{font-size:12.5px;font-weight:500;opacity:.7}
+#msg{min-height:3em;text-align:center;font-weight:600;font-size:14.5px;padding:8px 8px 0;color:#ffffffd9}
+#msg.ok{color:#7ff0cd}#msg.err{color:#ffb1aa}
+
+.cards{padding:0 16px;margin-top:-1px}
+.card{background:var(--paper);border-radius:24px;padding:18px 18px 8px;margin-top:14px}
+.card h2{font:600 12px var(--body);letter-spacing:.09em;text-transform:uppercase;color:var(--mute);margin:0 0 10px}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-bottom:10px}
+.tile{background:var(--mist);border-radius:16px;padding:12px 14px;min-width:0}
+.tile .k{font:500 11px var(--mono);letter-spacing:.1em;color:var(--mute)}
+.tile .t{font:500 26px var(--mono);letter-spacing:-.05em;margin:2px 0}
+.tile .loc{font-size:12px;color:var(--mute);line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tag{display:inline-block;font:600 11px var(--body);letter-spacing:.03em;padding:3px 10px;border-radius:99px;color:#fff;vertical-align:middle}
+.early{background:var(--jade)}.on_time{background:var(--iris)}.late{background:var(--coral)}
+.hist{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;padding:11px 0;border-top:1px solid var(--line);font-size:14px}
+.hist .d{font-weight:600}.hist .r{font:400 13px var(--mono);color:var(--mute)}
+
+.authbox{padding:0 16px}.form{background:var(--paper);border-radius:24px;padding:18px;margin-top:-26px;position:relative}
+h1{font:600 28px/1.15 var(--display);letter-spacing:-.05em;margin:30px 0 8px}.sub{color:#ffffffb3;margin:0 0 34px}
+.seg{display:grid;grid-template-columns:1fr 1fr;background:var(--mist);border-radius:14px;padding:4px;margin-bottom:14px}
+.seg button{border:0;background:none;padding:10px;border-radius:11px;font-weight:700;color:var(--mute);cursor:pointer}
+.seg button.on{background:var(--ink);color:#fff}
+input{width:100%;padding:14px 15px;margin:0 0 10px;border:1.5px solid var(--line);border-radius:14px;background:#fff}
+input:focus{border-color:var(--iris);outline:none}
+.go{width:100%;padding:15px;border:0;border-radius:14px;background:var(--iris);color:#fff;font-weight:700;cursor:pointer}
+#top{min-height:1.4em;font-weight:600;padding:10px 4px 0}.err{color:#d6382e}.ok{color:var(--jade)}
+#cam{position:fixed;inset:0;z-index:50;background:#0c0e26f2;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;color:#fff;text-align:center}
+#cam.on{display:flex}
+#cam .frame{width:min(78vw,340px);aspect-ratio:3/4;border-radius:50% / 42%;overflow:hidden;border:4px solid var(--gold);background:#000}
+#cam video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+#cam h3{font:600 20px var(--display);letter-spacing:-.03em;margin:0}
+#cam p{margin:0;max-width:340px;color:#ffffffb3;font-size:14px}
+#cam .row{display:flex;gap:10px;width:min(90vw,340px)}
+#cam button{flex:1;padding:14px;border:0;border-radius:14px;font-weight:700;cursor:pointer}
+#cam .snap{background:var(--gold);color:var(--ink)}#cam .x{background:#ffffff1f;color:#fff}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<main>
+<div id=auth hidden>
+  <div class=hero>
+    <div class=top><div class=brand><span class=mark><svg viewBox="0 0 16 16" fill=none stroke="#171a3d" stroke-width=2.4 stroke-linecap=round><circle cx=8 cy=8 r=6 /><path d="M8 4.5V8l2.2 1.5" /></svg></span>Punctual</div><button id=instA class=out-btn hidden>Install app</button></div>
+    <h1>Start your day</h1><p class=sub>Log in to mark your attendance.</p>
+  </div>
+  <div class=authbox><div class=form>
+    <div class=seg><button id=tLogin class=on>Log in</button><button id=tReg>Register</button></div>
+    <input id=name placeholder="Full name" autocomplete=name hidden>
+    <input id=user placeholder="Username or email" autocapitalize=none autocomplete=username>
+    <input id=pass type=password placeholder="Password" autocomplete=current-password>
+    <button id=go class=go>Log in</button>
+  </div></div>
+</div>
+
+<div id=app hidden>
+  <div class=hero>
+    <div class=top><div class=brand><span class=mark><svg viewBox="0 0 16 16" fill=none stroke="#171a3d" stroke-width=2.4 stroke-linecap=round><circle cx=8 cy=8 r=6 /><path d="M8 4.5V8l2.2 1.5" /></svg></span>Punctual</div><span><button id=inst class=out-btn hidden style="margin-right:6px">Install app</button><button id=logout class=out-btn>Log out</button></span></div>
+    <div class=hi id=greet></div><h1 class=who id=hello style="margin-top:0"></h1>
+    <div class=chips>
+      <span class=chip id=officeChip hidden><svg viewBox="0 0 16 16" fill=none stroke=currentColor stroke-width=1.8 stroke-linecap=round stroke-linejoin=round><path d="M8 14.5s5-4.2 5-8a5 5 0 0 0-10 0c0 3.8 5 8 5 8z" /><circle cx=8 cy=6.5 r=1.7 /></svg><span id=office></span></span>
+      <span class=chip id=shift></span>
+    </div>
+    <div class=dial>
+      <svg viewBox="0 0 320 320" id=ticks></svg>
+      <button id=btn><span class=act id=act>Check in</span><span class=big id=big>--:--</span><span class=small id=small></span></button>
+    </div>
+    <div id=msg role=status></div>
+  </div>
+  <div class=cards>
+    <div class=card id=card hidden>
+      <h2>Today</h2>
+      <div class=duo>
+        <div class=tile><div class=k>IN</div><div class=t id=inT></div><div id=inTag></div><div class=loc id=inL></div></div>
+        <div class=tile><div class=k>OUT</div><div class=t id=outT></div><div class=loc id=outL></div></div>
+      </div>
+    </div>
+    <div class=card><h2>Recent days</h2><div id=recent></div></div>
+  </div>
+</div>
+<div id=cam role=dialog aria-modal=true aria-label="Take a selfie">
+  <h3 id=camT>Take a selfie</h3>
+  <div class=frame><video id=camV autoplay playsinline muted></video></div>
+  <p id=camN></p>
+  <div class=row><button class=x id=camX>Cancel</button><button class=snap id=camGo>Take photo</button></div>
+</div>
+<p id=top style="padding:0 20px"></p>
+</main>
+<script>
+const $ = id => document.getElementById(id), esc = s => String(s).replace(/[&<>"]/g, c => '&#' + c.charCodeAt(0) + ';');
+const api = async (m, p, b) => {
+  const r = await fetch(p, {method: m, headers: {'Content-Type': 'application/json'}, body: b && JSON.stringify(b)}), j = await r.json();
+  if (!r.ok) throw Object.assign(new Error(j.error), {code: r.status}); return j;
+};
+const hm = t => new Date(t).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', hour12: false});
+const dur = m => `${Math.floor(m / 60)}h ${String(Math.floor(m % 60)).padStart(2, '0')}m`;
+const where = (lat, lng, addr) => esc(addr || `${lat.toFixed(5)}, ${lng.toFixed(5)}`);
+const say = (t, cls = '') => { $('msg').textContent = t; $('msg').className = cls; };
+const LABEL = {early: 'Early', on_time: 'On time', late: 'Late'}, COLOR = {early: '#12a37f', on_time: '#8f84ff', late: '#ff5a4f'};
+
+let reg = false, me;
+const mode = r => { reg = r; $('tLogin').className = r ? '' : 'on'; $('tReg').className = r ? 'on' : ''; $('name').hidden = !r; $('go').textContent = r ? 'Register' : 'Log in'; $('top').textContent = ''; };
+$('tLogin').onclick = () => mode(false); $('tReg').onclick = () => mode(true);
+$('go').onclick = async () => {
+  try {
+    const b = {name: $('name').value, username: $('user').value, password: $('pass').value};
+    if (reg) {
+      if (!b.name.trim() || !b.username.trim() || b.password.length < 6) throw new Error('Fill in your name, a username or email, and a password of 6+ characters first.');
+      b.photo = await takePhoto('Take your photo', 'Used to verify your check-ins. Your photo and a numeric face signature are stored, and your admin can delete them any time.', 'Agree and register');
+    }
+    const j = await api('POST', reg ? '/api/register' : '/api/login', b);
+    if (reg) { mode(false); $('top').className = 'ok'; $('top').textContent = j.msg; } else load();
+  } catch (e) { if (e.message === 'cancelled') { $('top').textContent = ''; return; } $('top').className = 'err'; $('top').textContent = e.message; }
+};
+$('logout').onclick = async () => { await api('POST', '/api/logout'); location.reload(); };
+
+// 60 ticks like a watch face. Before check-in they fill toward shift start (+grace) and change colour as you
+// cross it; after check-in they fill toward a 9 h day.
+for (let i = 0; i < 60; i++) {
+  const a = i * Math.PI / 30, r1 = i % 5 ? 140 : 134, l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  l.setAttribute('x1', 160 + r1 * Math.sin(a)); l.setAttribute('y1', 160 - r1 * Math.cos(a));
+  l.setAttribute('x2', 160 + 152 * Math.sin(a)); l.setAttribute('y2', 160 - 152 * Math.cos(a));
+  l.setAttribute('class', 'tick' + (i % 5 ? '' : ' hr')); $('ticks').append(l);
+}
+function paint() {
+  if (!me || me.role === 'admin') return;
+  const now = new Date(), t = me.today, [h, m] = me.shift.split(':').map(Number);
+  let pct, color, big, small;
+  if (me.face !== 'approved') {
+    [...$('ticks').children].forEach(l => l.style.stroke = '');
+    $('big').textContent = hm(now); $('small').textContent = me.face === 'none' ? 'one-time face setup' : 'waiting for your admin'; return;
+  }
+  if (!t) {
+    const start = new Date(now); start.setHours(h, m, 0, 0);
+    const d = (now - start) / 6e4;
+    pct = Math.min(Math.max((d + 60) / (60 + me.grace), 0), 1);
+    color = d < 0 ? COLOR.early : d <= me.grace ? COLOR.on_time : COLOR.late;
+    big = hm(now); small = d < 0 ? `shift in ${Math.ceil(-d)} min` : d <= me.grace ? 'on-time window' : `${Math.floor(d)} min late`;
+  } else if (!t.out_t) {
+    const w = (now - t.in_t) / 6e4; pct = Math.min(w / 540, 1); color = COLOR[t.status]; big = dur(w); small = 'worked so far';
+  } else { pct = 1; color = '#ffffff80'; big = dur((t.out_t - t.in_t) / 6e4); small = 'worked today'; }
+  const on = Math.round(pct * 60);
+  [...$('ticks').children].forEach((l, i) => l.style.stroke = i < on ? color : '');
+  $('big').textContent = big; $('small').textContent = small;
+}
+setInterval(paint, 1000);
+
+async function load() {
+  try { me = await api('GET', '/api/me'); } catch { $('auth').hidden = false; $('app').hidden = true; return; }
+  if (me.role === 'admin') { $('auth').hidden = true; $('app').hidden = true; $('top').innerHTML = 'You are logged in as admin. <a href=/admin>Open the admin page</a> or <a href=# id=alo>log out</a> to use the employee screen.'; $('alo').onclick = async e => { e.preventDefault(); await api('POST', '/api/logout'); location.reload(); }; return; }
+  $('auth').hidden = true; $('app').hidden = false; $('top').textContent = '';
+  const hr = new Date().getHours();
+  $('greet').textContent = hr < 12 ? 'Good morning' : hr < 17 ? 'Good afternoon' : 'Good evening';
+  $('hello').textContent = me.name; $('shift').textContent = 'Shift starts ' + me.shift;
+  const o = me.office || me.office_address; $('officeChip').hidden = !o; $('office').textContent = o; $('officeChip').title = me.office_address || '';
+  const t = me.today; $('card').hidden = !t;
+  if (t) {
+    $('inT').textContent = hm(t.in_t);
+    $('inTag').innerHTML = `<span class="tag ${t.status}">${LABEL[t.status]}${t.late_min ? ' +' + t.late_min + ' min' : ''}</span>`;
+    $('inL').innerHTML = where(t.in_lat, t.in_lng, t.in_addr);
+    $('outT').textContent = t.out_t ? hm(t.out_t) : '--:--'; $('outL').innerHTML = t.out_t ? where(t.out_lat, t.out_lng, t.out_addr) : '';
+  }
+  const b = $('btn'); b.disabled = me.face === 'pending' || !!(t && t.out_t); b.className = me.face === 'approved' && t && !t.out_t ? 'out' : '';
+  $('act').textContent = me.face === 'none' ? 'Register face' : me.face === 'pending' ? 'Awaiting approval' : !t ? 'Check in' : !t.out_t ? 'Check out' : 'Done';
+  $('recent').innerHTML = me.recent.map(r => `<div class=hist><span class=d>${new Date(r.day + 'T00:00').toLocaleDateString([], {weekday: 'short', day: 'numeric', month: 'short'})}</span><span class=r>${hm(r.in_t)} – ${r.out_t ? hm(r.out_t) : '…'}</span><span class="tag ${r.status}">${LABEL[r.status]}</span></div>`).join('') || '<p style="color:var(--mute);font-size:14px;margin:0 0 10px">Your days will show up here.</p>';
+  paint();
+}
+
+// Wait up to 15 s for a good GPS fix (<=30 m), then use the best one seen.
+const locate = () => new Promise((res, rej) => {
+  if (!navigator.geolocation) return rej(new Error('This device has no location support'));
+  let best, id; const t0 = Date.now();
+  const end = (v, e) => { navigator.geolocation.clearWatch(id); clearTimeout(t); v ? res(v) : rej(e); };
+  const t = setTimeout(() => best ? end(best) : end(0, new Error('Couldn\'t get your location. Turn on GPS and allow location access.')), 15000);
+  id = navigator.geolocation.watchPosition(p => {
+    if (!best || p.coords.accuracy < best.coords.accuracy) best = p;
+    say(`Finding your location… accuracy ${Math.round(p.coords.accuracy)} m`);
+    if (p.coords.accuracy <= 50 || (Date.now() - t0 > 6000 && best.coords.accuracy <= 300)) end(best);
+  }, e => end(0, new Error(e.code === 1 ? 'Location is blocked. Allow location for this site and try again.' : e.message)), {enableHighAccuracy: true, maximumAge: 0});
+});
+// Camera sheet: live preview, resolves with a small JPEG data URL when the user taps the button.
+function takePhoto(title, note, goLabel) {
+  return new Promise(async (resolve, reject) => {
+    let stream;
+    const close = () => { stream && stream.getTracks().forEach(t => t.stop()); $('cam').classList.remove('on'); };
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({video: {facingMode: 'user', width: {ideal: 720}, height: {ideal: 960}}, audio: false});
+    } catch { return reject(new Error('Camera is blocked. Allow the camera for this site and try again.')); }
+    $('camT').textContent = title; $('camN').textContent = note; $('camGo').textContent = goLabel;
+    $('camV').srcObject = stream; $('cam').classList.add('on');
+    $('camX').onclick = () => { close(); reject(new Error('cancelled')); };
+    $('camGo').onclick = () => {
+      const v = $('camV'), c = document.createElement('canvas'), k = Math.min(1, 640 / (v.videoWidth || 640));
+      c.width = Math.round((v.videoWidth || 640) * k); c.height = Math.round((v.videoHeight || 480) * k);
+      c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
+      close(); resolve(c.toDataURL('image/jpeg', 0.8));
+    };
+  });
+}
+$('btn').onclick = async () => {
+  if (me.face === 'pending') return;
+  $('btn').disabled = true;
+  try {
+    if (me.face === 'none') {
+      const photo = await takePhoto('Register your face', 'One time. Your photo and a numeric face signature are stored to verify your check-ins. Your admin can delete them any time.', 'Agree and take photo');
+      say((await api('POST', '/api/face/enroll', {photo})).msg, 'ok');
+    } else {
+      const out = $('btn').classList.contains('out'); say('Finding your location…');
+      const loc = locate(); loc.catch(() => {});  // runs while the user lines up the selfie
+      const photo = await takePhoto(out ? 'Check out' : 'Check in', 'Look at the camera in good light. This selfie is saved with your attendance.', out ? 'Take photo and check out' : 'Take photo and check in');
+      const p = (await loc).coords;
+      say((await api('POST', out ? '/api/checkout' : '/api/checkin', {lat: p.latitude, lng: p.longitude, acc: p.accuracy, photo})).msg, 'ok');
+    }
+  } catch (e) { if (e.message === 'cancelled') say(''); else say(e.message, 'err'); }
+  await load(); setTimeout(load, 5000);  // addresses are filled in a few seconds later
+};
+load();
+</script>

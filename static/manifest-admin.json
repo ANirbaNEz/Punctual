@@ -1,0 +1,25 @@
+{
+ "id": "/admin",
+ "name": "Punctual Admin",
+ "short_name": "Punctual Admin",
+ "start_url": "/admin",
+ "scope": "/admin",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#efeefb",
+ "theme_color": "#ffb627",
+ "icons": [
+  {
+   "src": "/static/icon-admin-192.png",
+   "sizes": "192x192",
+   "type": "image/png",
+   "purpose": "any maskable"
+  },
+  {
+   "src": "/static/icon-admin-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "any maskable"
+  }
+ ]
+}

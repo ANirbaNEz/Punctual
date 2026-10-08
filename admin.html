@@ -1,0 +1,229 @@
+<!doctype html><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
+<link rel=icon href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23ffb627'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23171a3d' stroke-width='3'/%3E%3Cpath d='M16 10v6l4 3' stroke='%23171a3d' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel=manifest href="/static/manifest-admin.json">
+<link rel=apple-touch-icon href="/static/icon-admin-192.png">
+<meta name=apple-mobile-web-app-capable content=yes>
+<meta name=mobile-web-app-capable content=yes>
+<title>Punctual Admin</title>
+<link rel=preconnect href="https://fonts.googleapis.com"><link rel=preconnect href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel=stylesheet>
+<link rel=stylesheet href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--ink:#171a3d;--mist:#efeefb;--paper:#fff;--line:#dedcf2;--mute:#6b6f93;--iris:#5b4bff;--jade:#12a37f;--coral:#ff5a4f;--gold:#ffb627;
+  --display:'Unbounded',system-ui,sans-serif;--body:'Plus Jakarta Sans',system-ui,sans-serif;--mono:'DM Mono',ui-monospace,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--mist);color:var(--ink);font:15px/1.5 var(--body)}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.bar{background:var(--ink);color:#fff;padding:14px 28px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font:600 16px var(--display);letter-spacing:-.02em}
+.mark{width:28px;height:28px;border-radius:10px;background:var(--gold);display:grid;place-items:center}.mark svg{width:17px;height:17px}
+.brand small{font:500 11px var(--mono);letter-spacing:.12em;opacity:.55}
+main{max-width:1180px;margin:0 auto;padding:22px 28px 56px}
+input,button{font:inherit;color:inherit}
+input{padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;background:#fff}input:focus{border-color:var(--iris);outline:none}
+.bar input{background:#ffffff14;border-color:#ffffff33;color:#fff;color-scheme:dark}
+button{border:0;border-radius:12px;padding:10px 16px;background:var(--iris);color:#fff;font-weight:700;cursor:pointer}
+.bar button{background:#ffffff1f}button.dark{background:var(--ink)}button.line{background:none;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+button.go{background:var(--jade)}button.stop{background:none;color:var(--coral);box-shadow:inset 0 0 0 1.5px var(--coral)}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:18px}
+.stat{background:var(--paper);border-radius:22px;padding:18px 20px}
+.stat b{display:block;font:600 40px/1.1 var(--display);letter-spacing:-.06em}
+.stat span{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--mute);margin-top:6px}
+.stat i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.card{background:var(--paper);border-radius:24px;padding:22px;margin-bottom:18px}
+h2{font:600 18px var(--display);letter-spacing:-.04em;margin:0 0 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+h2 small{font:500 11px var(--mono);letter-spacing:.1em;background:var(--mist);border-radius:99px;padding:4px 10px;color:var(--mute)}
+.wrap{overflow-x:auto}table{border-collapse:collapse;width:100%}
+th{font:600 11px var(--body);letter-spacing:.09em;text-transform:uppercase;color:var(--mute);text-align:left;padding:6px 12px 10px;white-space:nowrap}
+td{padding:13px 12px;border-top:1px solid var(--line);vertical-align:top}
+tbody tr:hover td{background:#f7f6fe}
+.t{font:500 15px var(--mono);letter-spacing:-.03em;white-space:nowrap}.loc{color:var(--mute);font-size:13px;max-width:300px}.loc a{color:var(--iris);font-weight:600;white-space:nowrap;text-decoration:none}
+.thumb{width:52px;height:52px;border-radius:14px;object-fit:cover;display:block;margin-top:6px;background:var(--mist)}.sc{font:500 12px 'DM Mono',monospace;color:var(--mute)}
+.facecell{display:flex;align-items:center;gap:10px;flex-wrap:wrap}#emps td{padding:12px 8px}#emps input[type=time]{width:112px;padding:8px}.fthumb{width:64px;height:64px;border-radius:16px;object-fit:cover;background:var(--mist);flex:none;display:block}
+.fmeta{display:flex;flex-direction:column;gap:8px;align-items:flex-start}.fbtn{display:flex;gap:6px}.fbtn button{padding:6px 12px;font-size:13px;border-radius:9px}
+tr.need td{background:#fff7e3}
+#toasts{position:fixed;top:78px;right:22px;z-index:99;display:flex;flex-direction:column;gap:10px;width:min(360px,calc(100vw - 44px))}
+.toast{background:var(--ink);color:#fff;border-radius:16px;padding:14px 18px;font-weight:600;box-shadow:0 8px 30px #171a3d55;display:flex;gap:12px;align-items:center;animation:pop .35s ease-out}
+.toast i{width:10px;height:10px;border-radius:50%;flex:none}
+@keyframes pop{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.toast{animation:none}}.tag{display:inline-block;font:600 11.5px var(--body);letter-spacing:.02em;padding:3px 11px;border-radius:99px;color:#fff;white-space:nowrap}
+.early,.active{background:var(--jade)}.on_time{background:var(--iris)}.late{background:var(--coral)}.pending{background:var(--gold);color:var(--ink)}.disabled{background:var(--mute)}
+
+.office{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:22px}@media(max-width:860px){.office{grid-template-columns:1fr}}
+label{display:block;font:600 11px var(--body);letter-spacing:.09em;text-transform:uppercase;color:var(--mute);margin:14px 0 5px}
+.office input:not([type=range]){width:100%}
+.row{display:flex;gap:8px}.row>*{flex:1;min-width:0}.row button{flex:none}
+.hint{color:var(--mute);font-size:13px;margin:8px 0 0}
+input[type=range]{width:100%;accent-color:var(--iris);padding:0;border:0}
+.rad{display:flex;align-items:center;gap:12px}.rad output{font:500 15px var(--mono);min-width:64px;text-align:right}
+#map{height:430px;border-radius:18px;position:relative;z-index:0;isolation:isolate}
+.actions{display:flex;gap:8px;align-items:center;margin-top:18px;flex-wrap:wrap}#sok{color:var(--jade);font-weight:700}
+#login{max-width:380px;margin:12vh auto;background:var(--paper);border-radius:24px;padding:26px}#login input{width:100%;margin:6px 0}#login button{width:100%;margin-top:6px}#lerr{color:#d6382e;min-height:1.4em;font-weight:600}
+</style>
+<div id=toasts aria-live=polite></div>
+<div id=login hidden><div class=brand style="color:var(--ink)"><span class=mark><svg viewBox="0 0 16 16" fill=none stroke="#171a3d" stroke-width=2.4 stroke-linecap=round><circle cx=8 cy=8 r=6 /><path d="M8 4.5V8l2.2 1.5" /></svg></span>Punctual <small>ADMIN</small></div>
+  <h2 style="margin-top:22px">Log in</h2>
+  <input id=u placeholder=Username value=admin autocapitalize=none><input id=p type=password placeholder=Password>
+  <button id=go>Log in</button><p id=lerr></p></div>
+
+<div id=dash hidden>
+  <div class=bar><div class=brand><span class=mark><svg viewBox="0 0 16 16" fill=none stroke="#171a3d" stroke-width=2.4 stroke-linecap=round><circle cx=8 cy=8 r=6 /><path d="M8 4.5V8l2.2 1.5" /></svg></span>Punctual <small>ADMIN</small></div>
+    <div style="display:flex;gap:8px"><button id=inst hidden>Install app</button><input type=date id=date><button id=logout>Log out</button></div></div>
+  <main>
+    <div class=stats id=stats></div>
+    <section class=card><h2>Attendance <small id=dlabel></small></h2>
+      <div class=wrap><table><thead><tr><th>Employee<th>Shift<th>In<th>In location<th>Out<th>Out location<th>Status</thead><tbody id=rows></tbody></table></div></section>
+    <section class=card><h2>Employees</h2>
+      <div class=wrap><table><thead><tr><th>Employee<th>Account<th>Shift start<th>Face<th>This month</thead><tbody id=emps></tbody></table></div></section>
+
+    <section class=card><h2>Office and attendance circle</h2>
+      <div class=office>
+        <div>
+          <label for=oname style="margin-top:0">Office name</label>
+          <input id=oname placeholder="e.g. Head office">
+          <button class=dark id=here type=button style="margin-top:10px;width:100%">Use my current location</button>
+          <p class=hint>Stand at your office and press the button. It fills the address and moves the circle here. You can also click the map or drag the pin.</p>
+          <label for=oaddr>Address</label>
+          <input id=oaddr placeholder="Filled in from the location, edit if needed">
+          <label for=radius>Circle size (people inside it can check in)</label>
+          <div class=rad><input id=radius type=range min=20 max=1000 step=10 value=200><output id=rout>200 m</output></div>
+          <div class=row><div><label for=lat>Latitude</label><input id=lat></div><div><label for=lng>Longitude</label><input id=lng></div></div>
+          <label for=grace>Late after (minutes past shift start)</label><input id=grace type=number min=0 style="width:120px">
+          <p class=hint>Drag the pin or click the map to move the circle.</p>
+          <div class=actions><button id=save>Save</button><button class=stop id=clear>Remove circle</button><span id=sok></span></div>
+        </div>
+        <div id=map></div>
+      </div></section>
+  </main>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const $ = id => document.getElementById(id), esc = s => String(s).replace(/[&<>"]/g, c => '&#' + c.charCodeAt(0) + ';');
+const api = async (m, p, b) => {
+  const r = await fetch(p, {method: m, headers: {'Content-Type': 'application/json'}, body: b && JSON.stringify(b)}), j = await r.json();
+  if (!r.ok) throw Object.assign(new Error(j.error), {code: r.status}); return j;
+};
+const hm = t => new Date(t).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit', hour12: false});
+const where = (lat, lng, addr) => `${esc(addr || lat.toFixed(5) + ', ' + lng.toFixed(5))} <a target=_blank href="https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=17/${lat}/${lng}">Map</a>`;
+const LABEL = {early: 'Early', on_time: 'On time', late: 'Late'};
+const photo = (f, sc) => f ? `<a target=_blank href="/api/admin/photo/${f}"><img class=thumb src="/api/admin/photo/${f}" alt="selfie"></a>${sc === undefined ? '' : `<span class=sc>match ${sc != null ? sc.toFixed(2) : '-'}</span>`}` : '';
+
+$('go').onclick = async () => {
+  try { await api('POST', '/api/login', {username: $('u').value, password: $('p').value}); start(); } catch (e) { $('lerr').textContent = e.message; }
+};
+$('logout').onclick = async () => { await api('POST', '/api/logout'); location.reload(); };
+
+let map, circle, pin, layer, first = true, autoAddr = true, geoTimer;
+async function start() {
+  try { await api('GET', '/api/admin/data'); } catch { $('login').hidden = false; return; }
+  $('login').hidden = true; $('dash').hidden = false;
+  map = L.map('map').setView([22.57, 88.36], 12);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '© OpenStreetMap'}).addTo(map);
+  layer = L.layerGroup().addTo(map);
+  map.on('click', e => place(e.latlng.lat, e.latlng.lng));
+  $('date').onchange = refresh; refresh();
+  // Instant updates come from a server-sent stream. Some proxies (Cloudflare quick tunnels) hold the stream back,
+  // so when no message (update or 5 s ping) has arrived for 12 s the page polls every 4 s instead.
+  let t, lastMsg = 0; const es = new EventSource('/api/admin/events');
+  es.onmessage = ev => { lastMsg = Date.now(); if (ev.data === 'update') { clearTimeout(t); t = setTimeout(refresh, 250); } };
+  setInterval(() => { if (Date.now() - lastMsg > 12000) refresh(); }, 4000);
+}
+// Move the office circle. The address is looked up from the position unless the admin typed their own.
+function place(lat, lng, zoom) {
+  $('lat').value = (+lat).toFixed(6); $('lng').value = (+lng).toFixed(6);
+  const ll = [lat, lng], r = +$('radius').value;
+  if (!pin) {
+    circle = L.circle(ll, {radius: r, color: '#5b4bff', weight: 2, fillColor: '#5b4bff', fillOpacity: .12}).addTo(map);
+    pin = L.marker(ll, {draggable: true}).addTo(map);
+    pin.on('drag', e => circle.setLatLng(e.latlng));
+    pin.on('dragend', () => place(pin.getLatLng().lat, pin.getLatLng().lng));
+  } else { pin.setLatLng(ll); circle.setLatLng(ll); }
+  if (zoom) map.setView(ll, 17);
+  if (autoAddr) { clearTimeout(geoTimer); geoTimer = setTimeout(() =>
+    api('GET', `/api/admin/geocode?lat=${lat}&lng=${lng}`).then(j => { if (autoAddr && j.address) $('oaddr').value = j.address; }).catch(() => {}), 700); }
+}
+$('oaddr').oninput = () => autoAddr = false;
+$('radius').oninput = () => { $('rout').textContent = $('radius').value + ' m'; circle?.setRadius(+$('radius').value); };
+$('lat').onchange = $('lng').onchange = () => { const a = parseFloat($('lat').value), o = parseFloat($('lng').value); if (!isNaN(a) && !isNaN(o)) place(a, o, true); };
+$('here').onclick = () => {
+  const b = $('here'); let done = false, id; autoAddr = true; b.textContent = 'Finding your location…';
+  const stop = () => { done = true; navigator.geolocation.clearWatch(id); b.textContent = 'Use my current location'; };
+  // Errors from a watch can be transient, so a fix is awaited for up to 15 s; on failure nothing is shown, the map still works.
+  id = navigator.geolocation.watchPosition(p => {
+    if (done) return; stop(); place(p.coords.latitude, p.coords.longitude, true); $('oname').focus();
+  }, () => {}, {enableHighAccuracy: true, maximumAge: 0});
+  setTimeout(() => done || stop(), 15000);
+};
+$('clear').onclick = () => { circle?.remove(); pin?.remove(); circle = pin = null; $('lat').value = $('lng').value = $('oname').value = $('oaddr').value = ''; };
+$('save').onclick = async () => {
+  try {
+    await api('POST', '/api/admin/settings', {name: $('oname').value, address: $('oaddr').value, lat: $('lat').value, lng: $('lng').value, radius: $('radius').value, grace: $('grace').value});
+    $('sok').textContent = 'Saved'; setTimeout(() => $('sok').textContent = '', 2500);
+  } catch (e) { alert(e.message); }
+};
+
+let prev = null;
+function toast(text, color) {
+  const t = document.createElement('div'); t.className = 'toast'; t.innerHTML = `<i style="background:${color}"></i><span></span>`; t.lastChild.textContent = text;
+  $('toasts').append(t); setTimeout(() => t.remove(), 7000);
+}
+// Compare with the previous snapshot and tell the admin what just happened.
+function announce(d) {
+  const rows = Object.fromEntries(d.rows.map(r => [r.name, r.out_t ? 2 : 1])), emps = Object.fromEntries(d.emps.map(e => [e.id, e]));
+  if (prev && prev.date === d.date) {
+    for (const r of d.rows) {
+      if (!prev.rows[r.name]) toast(`${r.name} checked in (${LABEL[r.status]}${r.late_min ? ' +' + r.late_min + ' min' : ''})`, r.status === 'late' ? '#ff5a4f' : '#12a37f');
+      else if (prev.rows[r.name] === 1 && r.out_t) toast(`${r.name} checked out`, '#5b4bff');
+    }
+    for (const e of d.emps) {
+      const o = prev.emps[e.id];
+      if (!o) toast(`${e.name} registered and is waiting for approval`, '#ffb627');
+      else if (e.face_status === 'pending' && o.face_status !== 'pending') toast(`${e.name} registered a face to review`, '#ffb627');
+    }
+  }
+  prev = {date: d.date, rows, emps};
+  const n = d.emps.filter(e => e.status === 'pending').length + d.emps.filter(e => e.face_status === 'pending').length;
+  document.title = (n ? `(${n}) ` : '') + 'Punctual Admin';
+}
+async function refresh() {
+  const d = await api('GET', '/api/admin/data?date=' + ($('date').value || ''));
+  announce(d);
+  $('date').value = d.date; $('dlabel').textContent = d.date === d.today ? 'TODAY' : d.date;
+  const active = d.emps.filter(e => e.status === 'active'), late = d.rows.filter(r => r.status === 'late').length;
+  $('stats').innerHTML = [['Checked in', d.rows.length, '#5b4bff'], ['On time or early', d.rows.length - late, '#12a37f'], ['Late', late, '#ff5a4f'],
+    ['Not checked in', Math.max(active.length - d.rows.length, 0), '#6b6f93'], ['Awaiting approval', d.emps.filter(e => e.status === 'pending').length, '#ffb627'], ['Faces to review', d.emps.filter(e => e.face_status === 'pending').length, '#ffb627']]
+    .map(([k, v, c]) => `<div class=stat><b>${v}</b><span><i style="background:${c}"></i>${k}</span></div>`).join('');
+  $('rows').innerHTML = d.rows.map(r => `<tr><td><b>${esc(r.name)}</b><td class=t>${r.shift}<td class=t>${hm(r.in_t)}${photo(r.in_photo, r.in_face)}<td class=loc>${where(r.in_lat, r.in_lng, r.in_addr)}
+    <td class=t>${r.out_t ? hm(r.out_t) : '--:--'}${photo(r.out_photo, r.out_face)}<td class=loc>${r.out_t ? where(r.out_lat, r.out_lng, r.out_addr) : ''}
+    <td><span class="tag ${r.status}">${LABEL[r.status]}${r.late_min ? ' +' + r.late_min + ' min' : ''}</span>`).join('') || '<tr><td colspan=7 class=loc>No check-ins on this date.';
+  const m = Object.fromEntries(d.month.map(x => [x.user_id, x])), order = {pending: 0, active: 1, disabled: 2};
+  $('emps').innerHTML = d.emps.sort((a, b) => order[a.status] - order[b.status]).map(e => `<tr class="${e.status === 'pending' || e.face_status === 'pending' ? 'need' : ''}">
+    <td><b>${esc(e.name)}</b><br><span class=sc>${esc(e.username)}</span>
+    <td><span class="tag ${e.status}">${e.status[0].toUpperCase() + e.status.slice(1)}</span><div class=fbtn style="margin-top:8px">${
+      e.status === 'pending' ? `<button class=go onclick="act(${e.id},'approve')">Approve</button>` :
+      e.status === 'active' ? `<button class=stop onclick="act(${e.id},'disable')">Disable</button>` : `<button class=line onclick="act(${e.id},'enable')">Enable</button>`}</div>
+    <td><input type=time value="${e.shift}" onchange="act(${e.id},null,this.value)">
+    <td>${faceCell(e)}
+    <td class=t>${m[e.id]?.late ?? 0} late<br><span class=sc>${m[e.id]?.days ?? 0} days present</span>`).join('') || '<tr><td colspan=5 class=loc>No employees yet. They show up here after they register.';
+  if (first) {
+    first = false; const s = d.settings;
+    $('radius').value = s.radius; $('rout').textContent = s.radius + ' m'; $('grace').value = s.grace;
+    $('oname').value = s.name || ''; $('oaddr').value = s.address || ''; autoAddr = !s.address;
+    if (s.lat !== '') place(+s.lat, +s.lng, true);
+  }
+  layer.clearLayers(); d.rows.forEach(r => L.circleMarker([r.in_lat, r.in_lng], {radius: 7, weight: 2.5, color: '#fff', fillColor: r.status === 'late' ? '#ff5a4f' : '#12a37f', fillOpacity: 1}).addTo(layer).bindTooltip(r.name));
+}
+const faceCell = e => {
+  if (e.face_status === 'none') return '<span class=sc>not registered</span>';
+  const img = `<a target=_blank href="/api/admin/photo/${e.face_photo}"><img class=fthumb src="/api/admin/photo/${e.face_photo}" alt="face"></a>`;
+  const ask = t => `if (confirm('${t}')) act(${e.id},'face_reset')`;
+  return e.face_status === 'pending'
+    ? `<div class=facecell>${img}<div class=fmeta><span class="tag pending">To review</span><div class=fbtn><button class=go onclick="act(${e.id},'face_approve')">Approve</button><button class=stop onclick="${ask('Reject this face? The employee will register again.')}">Reject</button></div></div></div>`
+    : `<div class=facecell>${img}<div class=fmeta><span class="tag active">Approved</span><div class=fbtn><button class=line onclick="${ask('Delete this face data? The employee will need to register again.')}">Reset</button></div></div></div>`;
+};
+async function act(id, action, shift) { try { await api('POST', '/api/admin/employee', {id, action, shift}); } catch (e) { alert(e.message); } refresh(); }
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+let installEv; addEventListener('beforeinstallprompt', e => { e.preventDefault(); installEv = e; $('inst').hidden = false; });
+$('inst').onclick = async () => { installEv.prompt(); await installEv.userChoice; $('inst').hidden = true; };
+start();
+</script>

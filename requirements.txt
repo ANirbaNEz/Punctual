@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+pyjwt
+pymysql
+cryptography
+opencv-python-headless
+numpy
