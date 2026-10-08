@@ -19,7 +19,7 @@ function Ask($label) {
 }
 $env:MYSQL_USER = "root"
 $env:MYSQL_PASSWORD = Ask "MySQL password (press Enter if it has none)"
-$env:ADMIN_PASSWORD = Ask "Admin password (only used the first time the app runs)"
+$env:ADMIN_PASSWORD = Ask "Admin password (8+ characters; only needed the very first time)"
 
 # 3. Free port 3000 in case an old copy is still running
 Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue |

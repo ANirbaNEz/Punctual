@@ -146,7 +146,7 @@ $('go').onclick = async () => {
   try {
     const b = {name: $('name').value, username: $('user').value, password: $('pass').value};
     if (reg) {
-      if (!b.name.trim() || !b.username.trim() || b.password.length < 6) throw new Error('Fill in your name, a username or email, and a password of 6+ characters first.');
+      if (!b.name.trim() || !b.username.trim() || b.password.length < 8) throw new Error('Fill in your name, a username or email, and a password of 8+ characters first.');
       b.photo = await takePhoto('Take your photo', 'Used to verify your check-ins. Your photo and a numeric face signature are stored, and your admin can delete them any time.', 'Agree and register');
     }
     const j = await api('POST', reg ? '/api/register' : '/api/login', b);

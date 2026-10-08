@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -q
+
+  e2e:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ci
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -pci"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      MYSQL_PASSWORD: ci
+      ADMIN_PASSWORD: ci-admin-password
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+      - run: pip install -r requirements-dev.txt
+      - name: Create the database
+        run: mysql -h 127.0.0.1 -uroot -pci < schema.sql
+      - name: Start the app
+        run: |
+          nohup python main.py > app.log 2>&1 &
+          for i in $(seq 1 90); do curl -sf http://127.0.0.1:3000/sw.js > /dev/null && exit 0; sleep 2; done
+          cat app.log; exit 1
+      - name: End-to-end tests
+        run: python tests/e2e.py http://127.0.0.1:3000 "$ADMIN_PASSWORD"
+      - name: App log
+        if: failure()
+        run: cat app.log

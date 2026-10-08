@@ -10,3 +10,5 @@ venv/
 brag-output/
 photos/
 models/
+.pytest_cache/
+tests/_tmp_*/

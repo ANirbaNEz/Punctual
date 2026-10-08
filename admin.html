@@ -39,7 +39,7 @@ td{padding:13px 12px;border-top:1px solid var(--line);vertical-align:top}
 tbody tr:hover td{background:#f7f6fe}
 .t{font:500 15px var(--mono);letter-spacing:-.03em;white-space:nowrap}.loc{color:var(--mute);font-size:13px;max-width:300px}.loc a{color:var(--iris);font-weight:600;white-space:nowrap;text-decoration:none}
 .thumb{width:52px;height:52px;border-radius:14px;object-fit:cover;display:block;margin-top:6px;background:var(--mist)}.sc{font:500 12px 'DM Mono',monospace;color:var(--mute)}
-.facecell{display:flex;align-items:center;gap:10px;flex-wrap:wrap}#emps td{padding:12px 8px}#emps input[type=time]{width:112px;padding:8px}.fthumb{width:64px;height:64px;border-radius:16px;object-fit:cover;background:var(--mist);flex:none;display:block}
+.facecell{display:flex;align-items:center;gap:10px;flex-wrap:wrap}#emps td{padding:12px 8px}#emps input[type=time]{width:112px;padding:8px}.days{display:flex;flex-wrap:wrap;gap:8px}.chk{display:inline-flex!important;align-items:center;gap:6px;margin:0!important;padding:6px 10px;border:1.5px solid var(--line);border-radius:99px;text-transform:none!important;letter-spacing:0!important;font-size:13px!important;color:var(--ink)!important;cursor:pointer}.chk input{width:auto;margin:0;accent-color:var(--iris)}.dup{font:700 12px var(--body);color:var(--late)}.fthumb{width:64px;height:64px;border-radius:16px;object-fit:cover;background:var(--mist);flex:none;display:block}
 .fmeta{display:flex;flex-direction:column;gap:8px;align-items:flex-start}.fbtn{display:flex;gap:6px}.fbtn button{padding:6px 12px;font-size:13px;border-radius:9px}
 tr.need td{background:#fff7e3}
 #toasts{position:fixed;top:78px;right:22px;z-index:99;display:flex;flex-direction:column;gap:10px;width:min(360px,calc(100vw - 44px))}
@@ -89,7 +89,10 @@ input[type=range]{width:100%;accent-color:var(--iris);padding:0;border:0}
           <div class=rad><input id=radius type=range min=20 max=1000 step=10 value=200><output id=rout>200 m</output></div>
           <div class=row><div><label for=lat>Latitude</label><input id=lat></div><div><label for=lng>Longitude</label><input id=lng></div></div>
           <label for=grace>Late after (minutes past shift start)</label><input id=grace type=number min=0 style="width:120px">
-          <p class=hint>Drag the pin or click the map to move the circle.</p>
+          <label>Working days</label>
+          <div class=days id=days><label class=chk><input type=checkbox value=0>Mon</label><label class=chk><input type=checkbox value=1>Tue</label><label class=chk><input type=checkbox value=2>Wed</label><label class=chk><input type=checkbox value=3>Thu</label><label class=chk><input type=checkbox value=4>Fri</label><label class=chk><input type=checkbox value=5>Sat</label><label class=chk><input type=checkbox value=6>Sun</label></div>
+          <label for=holidays>Holidays (dates like 2026-10-20, separated by commas)</label><input id=holidays placeholder="2026-10-20, 2026-12-25">
+          <p class=hint>Drag the pin or click the map to move the circle. Employees can't check in or out until an office is saved, and GPS fixes worse than <b id=maxacc>150</b> m are refused.</p>
           <div class=actions><button id=save>Save</button><button class=stop id=clear>Remove circle</button><span id=sok></span></div>
         </div>
         <div id=map></div>
@@ -157,7 +160,8 @@ $('here').onclick = () => {
 $('clear').onclick = () => { circle?.remove(); pin?.remove(); circle = pin = null; $('lat').value = $('lng').value = $('oname').value = $('oaddr').value = ''; };
 $('save').onclick = async () => {
   try {
-    await api('POST', '/api/admin/settings', {name: $('oname').value, address: $('oaddr').value, lat: $('lat').value, lng: $('lng').value, radius: $('radius').value, grace: $('grace').value});
+    await api('POST', '/api/admin/settings', {name: $('oname').value, address: $('oaddr').value, lat: $('lat').value, lng: $('lng').value, radius: $('radius').value, grace: $('grace').value,
+      workdays: [...document.querySelectorAll('#days input:checked')].map(c => +c.value), holidays: $('holidays').value});
     $('sok').textContent = 'Saved'; setTimeout(() => $('sok').textContent = '', 2500);
   } catch (e) { alert(e.message); }
 };
@@ -188,10 +192,10 @@ function announce(d) {
 async function refresh() {
   const d = await api('GET', '/api/admin/data?date=' + ($('date').value || ''));
   announce(d);
-  $('date').value = d.date; $('dlabel').textContent = d.date === d.today ? 'TODAY' : d.date;
+  $('date').value = d.date; $('dlabel').textContent = (d.date === d.today ? 'TODAY' : d.date) + (d.dayoff ? ' · DAY OFF' : '');
   const active = d.emps.filter(e => e.status === 'active'), late = d.rows.filter(r => r.status === 'late').length;
   $('stats').innerHTML = [['Checked in', d.rows.length, '#5b4bff'], ['On time or early', d.rows.length - late, '#12a37f'], ['Late', late, '#ff5a4f'],
-    ['Not checked in', Math.max(active.length - d.rows.length, 0), '#6b6f93'], ['Awaiting approval', d.emps.filter(e => e.status === 'pending').length, '#ffb627'], ['Faces to review', d.emps.filter(e => e.face_status === 'pending').length, '#ffb627']]
+    [d.dayoff ? 'Day off, no one expected' : 'Not checked in', d.dayoff ? 0 : Math.max(active.length - d.rows.length, 0), '#6b6f93'], ['Awaiting approval', d.emps.filter(e => e.status === 'pending').length, '#ffb627'], ['Faces to review', d.emps.filter(e => e.face_status === 'pending').length, '#ffb627']]
     .map(([k, v, c]) => `<div class=stat><b>${v}</b><span><i style="background:${c}"></i>${k}</span></div>`).join('');
   $('rows').innerHTML = d.rows.map(r => `<tr><td><b>${esc(r.name)}</b><td class=t>${r.shift}<td class=t>${hm(r.in_t)}${photo(r.in_photo, r.in_face)}<td class=loc>${where(r.in_lat, r.in_lng, r.in_addr)}
     <td class=t>${r.out_t ? hm(r.out_t) : '--:--'}${photo(r.out_photo, r.out_face)}<td class=loc>${r.out_t ? where(r.out_lat, r.out_lng, r.out_addr) : ''}
@@ -208,6 +212,7 @@ async function refresh() {
   if (first) {
     first = false; const s = d.settings;
     $('radius').value = s.radius; $('rout').textContent = s.radius + ' m'; $('grace').value = s.grace;
+    document.querySelectorAll('#days input').forEach(c => c.checked = s.workdays.includes(+c.value)); $('holidays').value = s.holidays; $('maxacc').textContent = s.max_accuracy;
     $('oname').value = s.name || ''; $('oaddr').value = s.address || ''; autoAddr = !s.address;
     if (s.lat !== '') place(+s.lat, +s.lng, true);
   }
@@ -218,7 +223,7 @@ const faceCell = e => {
   const img = `<a target=_blank href="/api/admin/photo/${e.face_photo}"><img class=fthumb src="/api/admin/photo/${e.face_photo}" alt="face"></a>`;
   const ask = t => `if (confirm('${t}')) act(${e.id},'face_reset')`;
   return e.face_status === 'pending'
-    ? `<div class=facecell>${img}<div class=fmeta><span class="tag pending">To review</span><div class=fbtn><button class=go onclick="act(${e.id},'face_approve')">Approve</button><button class=stop onclick="${ask('Reject this face? The employee will register again.')}">Reject</button></div></div></div>`
+    ? `<div class=facecell>${img}<div class=fmeta><span class="tag pending">To review</span>${e.face_dup ? `<span class=dup>Looks like ${esc(e.face_dup.name)} (${e.face_dup.score})</span>` : ''}<div class=fbtn><button class=go onclick="act(${e.id},'face_approve')">Approve</button><button class=stop onclick="${ask('Reject this face? The employee will register again.')}">Reject</button></div></div></div>`
     : `<div class=facecell>${img}<div class=fmeta><span class="tag active">Approved</span><div class=fbtn><button class=line onclick="${ask('Delete this face data? The employee will need to register again.')}">Reset</button></div></div></div>`;
 };
 async function act(id, action, shift) { try { await api('POST', '/api/admin/employee', {id, action, shift}); } catch (e) { alert(e.message); } refresh(); }

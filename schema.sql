@@ -54,6 +54,16 @@ CREATE TABLE IF NOT EXISTS attendance (
   CONSTRAINT fk_attendance_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+-- Login / sign-up attempts, used for rate limiting. main.py also creates this table by itself if it is missing.
+CREATE TABLE IF NOT EXISTS attempts (
+  id       BIGINT AUTO_INCREMENT PRIMARY KEY,
+  kind     VARCHAR(10) NOT NULL,                       -- 'login' or 'register'
+  ip       VARCHAR(64) NOT NULL,
+  username VARCHAR(64) NULL,
+  t        TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY ix_attempts (kind, ip, t)
+) ENGINE=InnoDB;
+
 -- ---------------------------------------------------------------------------
 -- Upgrade an existing database (tables created before selfie / face match).
 -- Run these two statements once, on the `attendance` database:
