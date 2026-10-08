@@ -1,14 +1,22 @@
 # Punctual
 
+[![CI](https://github.com/ANirbaNEz/Punctual/actions/workflows/ci.yml/badge.svg)](https://github.com/ANirbaNEz/Punctual/actions/workflows/ci.yml)
+
 Location- and face-verified employee attendance. Employees check in and out from their phone or PC; the app confirms they are at the office and that it is really them, records where and when, and tells them whether they are early, on time or late. Admins see everything live on a dashboard.
 
 Both screens are installable as apps (PWA) with their own icons: **Punctual** for employees, **Punctual Admin** for admins.
 
-| Employee (phone) | Employee, checked in | Admin dashboard |
-|---|---|---|
-| ![Employee home](docs/employee-home.png) | ![Checked in](docs/employee-checked-in.png) | ![Admin](docs/admin-dashboard.png) |
+| Employee: before check-in | Employee: checked in |
+|---|---|
+| ![Employee home](docs/employee-home.png) | ![Checked in](docs/employee-checked-in.png) |
 
-> Screenshots use made-up demo data.
+![Admin dashboard](docs/admin-dashboard.png)
+
+| Admin: reviewing faces | Admin: office circle and rules |
+|---|---|
+| ![Admin faces](docs/admin-faces.png) | ![Office setup](docs/admin-office.png) |
+
+> Screenshots use made-up names and drawn avatars, not real people.
 
 ## Features
 
@@ -36,7 +44,7 @@ Both screens are installable as apps (PWA) with their own icons: **Punctual** fo
 | Location | Browser Geolocation API, OpenStreetMap Nominatim for addresses (can be switched off) |
 | Face check | OpenCV (YuNet face detector + SFace recogniser, small ONNX models with pinned checksums), camera via `getUserMedia` |
 | Install | PWA: web manifests, service worker, separate icons for the two apps |
-| Tests | pytest unit tests and a full end-to-end script, both run by GitHub Actions |
+| Tests | pytest unit tests and a full end-to-end script, both run by GitHub Actions on every push |
 
 ## How it works
 
@@ -115,8 +123,10 @@ employee.html        Employee app
 admin.html           Admin app
 static/              PWA manifests, icons, service worker
 tests/               unit tests and the end-to-end script
+requirements.txt     what the app needs
+requirements-dev.txt extra packages for the tests only
 .github/workflows/   CI
-start.ps1            Windows helper: starts the app and a tunnel
+start.ps1            Windows helper: asks for passwords, starts the app and a tunnel
 models/              face models (downloaded on first start, not committed)
 photos/              selfies (created at runtime, not committed)
 docs/                README screenshots
